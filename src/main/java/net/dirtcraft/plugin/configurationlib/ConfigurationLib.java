@@ -19,7 +19,6 @@ import java.nio.file.Path;
 )
 public class ConfigurationLib {
 
-
     @Listener
     public void onConfigurationReload(ConfigurationReloadEvent event) {
         for (Configuration<? extends IConfiguration> configuration : ConfigurationManager.getConfigurations()) {
