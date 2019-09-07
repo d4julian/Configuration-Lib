@@ -1,9 +1,12 @@
 package net.dirtcraft.plugin.configurationlib;
 
+import com.google.common.reflect.TypeToken;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.plugin.PluginContainer;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 public class Configuration<E extends IConfiguration> {
@@ -68,5 +71,36 @@ public class Configuration<E extends IConfiguration> {
 
     public PluginContainer getContainer() {
         return container;
+    }
+
+    public void save(E configSerializable) {
+        try {
+            ConfigurationLoader<CommentedConfigurationNode> loader = this.loader;
+            CommentedConfigurationNode node = loader.load(ConfigurationManager.options);
+            TypeToken token = TypeToken.of(configSerializable.getClass());
+            node.setValue(token, configSerializable);
+            loader.save(node);
+            this.setConfigSerializable(configSerializable);
+            this.setLoader(loader);
+            this.setNode(node);
+        } catch (IOException | ObjectMappingException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public void load() {
+        try {
+            ConfigurationLoader<CommentedConfigurationNode> loader = this.loader;
+            CommentedConfigurationNode node = loader.load(ConfigurationManager.options);
+            E configSerializable = this.getConfigSerializable();
+            TypeToken token = TypeToken.of(configSerializable.getClass());
+            configSerializable = node.getValue((TypeToken<E>) token, configSerializable);
+            loader.save(node);
+            this.setConfigSerializable(configSerializable);
+            this.setLoader(loader);
+            this.setNode(node);
+        } catch (IOException | ObjectMappingException exception) {
+            exception.printStackTrace();
+        }
     }
 }
