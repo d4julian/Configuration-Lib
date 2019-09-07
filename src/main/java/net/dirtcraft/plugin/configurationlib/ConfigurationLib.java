@@ -1,9 +1,7 @@
 package net.dirtcraft.plugin.configurationlib;
 
-import com.google.common.reflect.TypeToken;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -28,13 +26,12 @@ public class ConfigurationLib {
                 ConfigurationLoader<CommentedConfigurationNode> loader = configuration.getLoader();
                 CommentedConfigurationNode node = loader.load(ConfigurationManager.options);
                 E configSerializable = configuration.getConfigSerializable();
-                TypeToken<E> token = new TypeToken<E>(configSerializable.getClass()){};
-                configSerializable = node.getValue(token, configSerializable);
+                configSerializable = (E) node.getValue(configSerializable);
                 loader.save(node);
                 configuration.setConfigSerializable(configSerializable);
                 configuration.setLoader(loader);
                 configuration.setNode(node);
-            } catch (IOException | ObjectMappingException exception) {
+            } catch (IOException exception) {
                 exception.printStackTrace();
             }
         }

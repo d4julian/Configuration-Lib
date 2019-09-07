@@ -1,11 +1,9 @@
 package net.dirtcraft.plugin.configurationlib;
 
-import com.google.common.reflect.TypeToken;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.plugin.PluginContainer;
 
 import java.io.IOException;
@@ -32,7 +30,7 @@ public class ConfigurationManager {
         }
     }
 
-    static <E extends IConfiguration> void createConfiguration(Configuration<E> configuration) throws IOException, ObjectMappingException {
+    static <E extends IConfiguration> void createConfiguration(Configuration<E> configuration) throws IOException {
         Path config = directoryMap.get(configuration.getContainer().getId()).resolve(configuration.getContainer().getId() + ".conf");
         configuration.setPath(config);
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder()
@@ -41,8 +39,7 @@ public class ConfigurationManager {
                 .build();
         CommentedConfigurationNode node = loader.load(options);
         E configSerializable = configuration.getConfigSerializable();
-        TypeToken<E> token = new TypeToken<E>(configSerializable.getClass()){};
-        configSerializable = node.getValue(token, configSerializable);
+        configSerializable = (E) node.getValue(configSerializable);
         loader.save(node);
         configuration.setConfigSerializable(configSerializable);
         configuration.setLoader(loader);
@@ -50,7 +47,7 @@ public class ConfigurationManager {
         configurations.add(configuration);
     }
 
-    static <E extends IConfiguration> void createConfiguration(Configuration<E> configuration, String fileName) throws IOException, ObjectMappingException {
+    static <E extends IConfiguration> void createConfiguration(Configuration<E> configuration, String fileName) throws IOException {
         Path config = directoryMap.get(configuration.getContainer().getId()).resolve(fileName + ".conf");
         configuration.setPath(config);
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder()
@@ -59,8 +56,7 @@ public class ConfigurationManager {
                 .build();
         CommentedConfigurationNode node = loader.load(options);
         E configSerializable = configuration.getConfigSerializable();
-        TypeToken<E> token = new TypeToken<E>(configSerializable.getClass()){};
-        configSerializable = node.getValue(token, configSerializable);
+        configSerializable = (E) node.getValue(configSerializable);
         loader.save(node);
         configuration.setConfigSerializable(configSerializable);
         configuration.setLoader(loader);
