@@ -58,8 +58,8 @@ public class Configuration<E extends IConfiguration> {
         return configuration;
     }
 
-    public void setConfigSerializable(Object configSerializable) {
-        this.configuration = (E) configSerializable;
+    public void setConfigSerializable(E configSerializable) {
+        this.configuration = configSerializable;
     }
 
     void setPath(Path path) {

@@ -32,36 +32,39 @@ public class ConfigurationManager {
         }
     }
 
-    static void createConfiguration(Configuration<? extends IConfiguration> configuration) throws IOException, ObjectMappingException {
+    static <E extends IConfiguration> void createConfiguration(Configuration<E> configuration) throws IOException, ObjectMappingException {
         Path config = directoryMap.get(configuration.getContainer().getId()).resolve(configuration.getContainer().getId() + ".conf");
         configuration.setPath(config);
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder()
                 .setDefaultOptions(options)
                 .setPath(config)
                 .build();
-        configuration.setLoader(loader);
         CommentedConfigurationNode node = loader.load(options);
-        Object configSerializable = configuration.getConfigSerializable();
-        TypeToken token = TypeToken.of(configSerializable.getClass());
+        E configSerializable = configuration.getConfigSerializable();
+        TypeToken<E> token = new TypeToken<E>(configSerializable.getClass()){};
         configSerializable = node.getValue(token, configSerializable);
         configuration.setConfigSerializable(configSerializable);
+        configuration.setNode(node);
         loader.save(node);
+        configuration.setLoader(loader);
         configurations.add(configuration);
     }
 
-    static void createConfiguration(Configuration<? extends IConfiguration> configuration, String fileName) throws IOException, ObjectMappingException {
+    static <E extends IConfiguration> void createConfiguration(Configuration<E> configuration, String fileName) throws IOException, ObjectMappingException {
         Path config = directoryMap.get(configuration.getContainer().getId()).resolve(fileName + ".conf");
         configuration.setPath(config);
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder()
                 .setDefaultOptions(options)
                 .setPath(config)
                 .build();
-        configuration.setLoader(loader);
         CommentedConfigurationNode node = loader.load(options);
-        Object configSerializable = configuration.getConfigSerializable();
-        TypeToken token = TypeToken.of(configSerializable.getClass());
-        node.getValue(token, configSerializable);
+        E configSerializable = configuration.getConfigSerializable();
+        TypeToken<E> token = new TypeToken<E>(configSerializable.getClass()){};
+        configSerializable = node.getValue(token, configSerializable);
+        configuration.setConfigSerializable(configSerializable);
+        configuration.setNode(node);
         loader.save(node);
+        configuration.setLoader(loader);
         configurations.add(configuration);
     }
 
