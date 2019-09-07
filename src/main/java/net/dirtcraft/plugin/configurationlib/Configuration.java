@@ -46,16 +46,12 @@ public class Configuration<E extends IConfiguration> {
         return path;
     }
 
-    void setLoader(ConfigurationLoader<CommentedConfigurationNode> loader) {
+    public void setLoader(ConfigurationLoader<CommentedConfigurationNode> loader) {
         this.loader = loader;
     }
 
-    void setNode(CommentedConfigurationNode node) {
+    public void setNode(CommentedConfigurationNode node) {
         this.node = node;
-    }
-
-    void setPath(Path path) {
-        this.path = path;
     }
 
     public E getConfigSerializable() {
@@ -64,6 +60,10 @@ public class Configuration<E extends IConfiguration> {
 
     public void setConfigSerializable(Object configSerializable) {
         this.configuration = (E) configSerializable;
+    }
+
+    void setPath(Path path) {
+        this.path = path;
     }
 
     public PluginContainer getContainer() {
