@@ -41,8 +41,8 @@ public class ConfigurationManager {
                 .build();
         CommentedConfigurationNode node = loader.load(options);
         T configSerializable = configuration.getConfigSerializable();
-        TypeToken<T> token = new TypeToken<T>(configSerializable.getClass()){};
-        configSerializable = node.getValue(token, configSerializable);
+        TypeToken token = TypeToken.of(configSerializable.getClass());
+        configSerializable = node.getValue((TypeToken<T>) token, configSerializable);
         loader.save(node);
         configuration.setConfigSerializable(configSerializable);
         configuration.setLoader(loader);
@@ -59,8 +59,8 @@ public class ConfigurationManager {
                 .build();
         CommentedConfigurationNode node = loader.load(options);
         T configSerializable = configuration.getConfigSerializable();
-        TypeToken<T> token = new TypeToken<T>(configSerializable.getClass()){};
-        configSerializable = node.getValue(token, configSerializable);
+        TypeToken token = TypeToken.of(configSerializable.getClass());
+        configSerializable = node.getValue((TypeToken<T>) token, configSerializable);
         loader.save(node);
         configuration.setConfigSerializable(configSerializable);
         configuration.setLoader(loader);
