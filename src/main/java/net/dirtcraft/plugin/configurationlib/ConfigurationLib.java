@@ -23,16 +23,16 @@ public class ConfigurationLib {
     @Listener
     public void onConfigurationReload(ConfigurationReloadEvent event) {
         for (Configuration<? extends IConfiguration> configuration : ConfigurationManager.getConfigurations()) {
-            if (configuration.getContainer() != event.getContainer()) continue;
+            if (!configuration.getContainer().getId().equalsIgnoreCase(event.getContainer().getId())) continue;
             try {
                 ConfigurationLoader<CommentedConfigurationNode> loader = configuration.getLoader();
                 CommentedConfigurationNode node = loader.load(ConfigurationManager.options);
                 Object configSerializable = configuration.getConfigSerializable();
                 TypeToken token = TypeToken.of(configSerializable.getClass());
                 configSerializable = node.getValue(token, configSerializable);
+                loader.save(configuration.getNode());
                 configuration.setConfigSerializable(configSerializable);
                 configuration.setNode(node);
-                loader.save(configuration.getNode());
                 configuration.setLoader(loader);
             } catch (IOException | ObjectMappingException exception) {
                 exception.printStackTrace();

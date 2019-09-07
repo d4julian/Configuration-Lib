@@ -21,10 +21,10 @@ public class ConfigurationManager {
     public static final ConfigurationOptions options = ConfigurationOptions.defaults().setShouldCopyDefaults(true);
     private static final ArrayList<Configuration<? extends IConfiguration>> configurations = new ArrayList<>();
 
-    private static HashMap<PluginContainer, Path> directoryMap = new HashMap<>();
+    private static HashMap<String, Path> directoryMap = new HashMap<>();
 
     static void setup(PluginContainer container, Path path) {
-        directoryMap.put(container, path);
+        directoryMap.put(container.getId(), path);
         try {
             if (!Files.exists(path)) Files.createDirectory(path);
         } catch (IOException exception) {
@@ -33,7 +33,7 @@ public class ConfigurationManager {
     }
 
     static void createConfiguration(Configuration<? extends IConfiguration> configuration) throws IOException, ObjectMappingException {
-        Path config = directoryMap.get(configuration.getContainer()).resolve(configuration.getContainer().getId() + ".conf");
+        Path config = directoryMap.get(configuration.getContainer().getId()).resolve(configuration.getContainer().getId() + ".conf");
         configuration.setPath(config);
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder()
                 .setDefaultOptions(options)
@@ -50,7 +50,7 @@ public class ConfigurationManager {
     }
 
     static void createConfiguration(Configuration<? extends IConfiguration> configuration, String fileName) throws IOException, ObjectMappingException {
-        Path config = directoryMap.get(configuration.getContainer()).resolve(fileName + ".conf");
+        Path config = directoryMap.get(configuration.getContainer().getId()).resolve(fileName + ".conf");
         configuration.setPath(config);
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder()
                 .setDefaultOptions(options)
