@@ -19,7 +19,7 @@ import java.util.List;
 public class ConfigurationManager {
 
     public static final ConfigurationOptions options = ConfigurationOptions.defaults().setShouldCopyDefaults(true);
-    private static final ArrayList<Configuration<? extends IConfiguration>> configurations = new ArrayList<>();
+    private static final ArrayList<Configuration> configurations = new ArrayList<>();
 
     private static HashMap<String, Path> directoryMap = new HashMap<>();
 
@@ -43,10 +43,10 @@ public class ConfigurationManager {
         E configSerializable = configuration.getConfigSerializable();
         TypeToken<E> token = new TypeToken<E>(configSerializable.getClass()){};
         configSerializable = node.getValue(token, configSerializable);
-        configuration.setConfigSerializable(configSerializable);
-        configuration.setNode(node);
         loader.save(node);
+        configuration.setConfigSerializable(configSerializable);
         configuration.setLoader(loader);
+        configuration.setNode(node);
         configurations.add(configuration);
     }
 
@@ -61,14 +61,14 @@ public class ConfigurationManager {
         E configSerializable = configuration.getConfigSerializable();
         TypeToken<E> token = new TypeToken<E>(configSerializable.getClass()){};
         configSerializable = node.getValue(token, configSerializable);
-        configuration.setConfigSerializable(configSerializable);
-        configuration.setNode(node);
         loader.save(node);
+        configuration.setConfigSerializable(configSerializable);
         configuration.setLoader(loader);
+        configuration.setNode(node);
         configurations.add(configuration);
     }
 
-    static List<Configuration<? extends IConfiguration>> getConfigurations() {
+    static List<Configuration> getConfigurations() {
         return Collections.unmodifiableList(configurations);
     }
 }

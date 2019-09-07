@@ -21,19 +21,19 @@ import java.nio.file.Path;
 public class ConfigurationLib {
 
     @Listener
-    public void onConfigurationReload(ConfigurationReloadEvent event) {
-        for (Configuration<? extends IConfiguration> configuration : ConfigurationManager.getConfigurations()) {
+    public <E extends IConfiguration> void onConfigurationReload(ConfigurationReloadEvent event) {
+        for (Configuration<E> configuration : ConfigurationManager.getConfigurations()) {
             if (!configuration.getContainer().getId().equalsIgnoreCase(event.getContainer().getId())) continue;
             try {
                 ConfigurationLoader<CommentedConfigurationNode> loader = configuration.getLoader();
                 CommentedConfigurationNode node = loader.load(ConfigurationManager.options);
-                Object configSerializable = configuration.getConfigSerializable();
-                TypeToken token = TypeToken.of(configSerializable.getClass());
+                E configSerializable = configuration.getConfigSerializable();
+                TypeToken<E> token = new TypeToken<E>(configSerializable.getClass()){};
                 configSerializable = node.getValue(token, configSerializable);
-                loader.save(configuration.getNode());
+                loader.save(node);
                 configuration.setConfigSerializable(configSerializable);
-                configuration.setNode(node);
                 configuration.setLoader(loader);
+                configuration.setNode(node);
             } catch (IOException | ObjectMappingException exception) {
                 exception.printStackTrace();
             }
