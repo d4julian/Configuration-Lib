@@ -42,9 +42,7 @@ public class ConfigurationManager {
         CommentedConfigurationNode node = loader.load(options);
         T configSerializable = configuration.getConfigSerializable();
         TypeToken<T> token = new TypeToken<T>(configSerializable.getClass()){};
-        //configSerializable = node.getValue(token, configSerializable);
-        configSerializable = options.getSerializers().get(token).deserialize(token, node);
-        //node.getOptions().getSerializers().get(token).serialize(token, configSerializable, node);
+        configSerializable = node.getValue(token, configSerializable);
         loader.save(node);
         configuration.setConfigSerializable(configSerializable);
         configuration.setLoader(loader);
@@ -62,9 +60,7 @@ public class ConfigurationManager {
         CommentedConfigurationNode node = loader.load(options);
         T configSerializable = configuration.getConfigSerializable();
         TypeToken<T> token = new TypeToken<T>(configSerializable.getClass()){};
-        //configSerializable = node.getValue(token, configSerializable);
-        configSerializable = options.getSerializers().get(token).deserialize(token, node);
-        //node.getOptions().getSerializers().get(token).serialize(token, configSerializable, node);
+        configSerializable = node.getValue(token, configSerializable);
         loader.save(node);
         configuration.setConfigSerializable(configSerializable);
         configuration.setLoader(loader);
