@@ -62,7 +62,7 @@ public class Configuration<E extends IConfiguration> {
         return configuration;
     }
 
-    void setConfigSerializable(Object configSerializable) {
+    public void setConfigSerializable(Object configSerializable) {
         this.configuration = (E) configSerializable;
     }
 
