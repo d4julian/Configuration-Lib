@@ -6,12 +6,14 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import org.spongepowered.api.plugin.PluginContainer;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class ConfigurationManager {
@@ -19,19 +21,19 @@ public class ConfigurationManager {
     public static final ConfigurationOptions options = ConfigurationOptions.defaults().setShouldCopyDefaults(true);
     private static final ArrayList<Configuration<? extends IConfiguration>> configurations = new ArrayList<>();
 
-    private static Path directory;
+    private static HashMap<PluginContainer, Path> directoryMap = new HashMap<>();
 
-    static void setup(Path path) {
-        directory = path;
+    static void setup(PluginContainer container, Path path) {
+        directoryMap.put(container, path);
         try {
-            if (!Files.exists(directory)) Files.createDirectory(directory);
+            if (!Files.exists(path)) Files.createDirectory(path);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
     }
 
     static void createConfiguration(Configuration<? extends IConfiguration> configuration) throws IOException, ObjectMappingException {
-        Path config = directory.resolve(configuration.getContainer().getId() + ".conf");
+        Path config = directoryMap.get(configuration.getContainer()).resolve(configuration.getContainer().getId() + ".conf");
         configuration.setPath(config);
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder()
                 .setDefaultOptions(options)
@@ -48,7 +50,7 @@ public class ConfigurationManager {
     }
 
     static void createConfiguration(Configuration<? extends IConfiguration> configuration, String fileName) throws IOException, ObjectMappingException {
-        Path config = directory.resolve(fileName + ".conf");
+        Path config = directoryMap.get(configuration.getContainer()).resolve(fileName + ".conf");
         configuration.setPath(config);
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder()
                 .setDefaultOptions(options)

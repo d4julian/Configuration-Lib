@@ -6,6 +6,7 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -39,8 +40,8 @@ public class ConfigurationLib {
         }
     }
 
-    public static void setup(Path path) {
-        ConfigurationManager.setup(path);
+    public static void setup(PluginContainer container, Path path) {
+        ConfigurationManager.setup(container, path);
     }
 
 }
